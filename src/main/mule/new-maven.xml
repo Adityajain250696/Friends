@@ -29,21 +29,4 @@ output application/json
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="0539a424-d7d1-480f-8dcb-f3950c829cdb" message="hello"/>
 	</flow>
-	<flow name="POST" doc:id="fe38126d-2b73-48d2-8f65-d22082ff18df" >
-		<http:listener doc:name="Listener" doc:id="45b3fa51-9b9c-47b2-8afd-d58bd9810205" config-ref="HTTP_Listener_config" path="/post" allowedMethods="POST"/>
-		<db:insert doc:name="Insert" doc:id="a20b6f94-d1ca-4af4-bf66-4d5e10153c04" config-ref="Database_Config">
-			<db:sql ><![CDATA[INSERT INTO `EMP-WS_1` (`EmployeeName`, `EmployeeCode`, `Age`) VALUES  ('Astha jain','A15','26')]]></db:sql>
-		</db:insert>
-		<ee:transform doc:name="Transform Message" doc:id="7a9525cb-9eb6-424f-9729-7297dc9725c5" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	Message: "Employee successfully got added "
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="eadf0df4-b6cd-4159-93cb-15839d278494" message="bye"/>
-	</flow>
 </mule>

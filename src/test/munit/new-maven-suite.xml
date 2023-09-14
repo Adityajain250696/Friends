@@ -8,41 +8,30 @@
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
 		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
 	<munit:config name="new-maven-suite.xml" />
-	<munit:test name="GET-test" doc:id="3e569b0b-af8f-4ec7-9007-6b30cefe28ca" >
+	<munit:test name="GET-test2" doc:id="26b981ac-47de-4fab-8c6b-0d16a9cea7e4" >
 		<munit:behavior >
-			<munit:set-event doc:name="Set Input" doc:id="5261d409-e105-48ba-b363-7044a6066f07" >
-				<munit:payload value="#[output application/json  --- readUrl('classpath://GETtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
-				<munit:attributes value="#[readUrl('classpath://GETtest\set-event_attributes.dwl')]" />
+			<munit-tools:mock-when doc:name="Mock Select" doc:id="42469e82-14eb-4b9a-bbe3-740190d124df" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b3569c8f-3e0a-46d8-b309-2958c934db48" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java  --- readUrl('classpath://GETtest2\mock_payload.dwl')]" mediaType="application/java " encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="8245398a-b513-4920-a875-0d661496f59e" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://GETtest2\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://GETtest2\set-event_attributes.dwl')]" />
 			</munit:set-event>
 		</munit:behavior>
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to GET" doc:id="875569e1-ca84-4ada-9b4a-aded8f28bfd9" name="GET"/>
+			<flow-ref doc:name="Flow-ref to GET" doc:id="a2fb11b7-2a66-4e69-a76a-92ec996f8189" name="GET"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="492b722f-9672-4751-b529-816febf7c3f4" message="The payload does not match">
+			<munit-tools:assert doc:name="Assert payload" doc:id="69b76659-a428-494b-8a69-5956ec5b3393" message="The payload does not match">
 				<munit-tools:that ><![CDATA[#[%dw 2.0
-import GETtest::assert_expression_payload
+import GETtest2::assert_expression_payload
 ---
 assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
-		</munit:validation>
-	</munit:test>
-	<munit:test name="POST-test" doc:id="bd3d6ad8-2aad-4baf-9e1c-3f23db998b6b" >
-		<munit:behavior >
-			<munit:set-event doc:name="Set Input" doc:id="083257e6-70f2-49b6-b3dc-2fd5910007ef" >
-				<munit:payload value="#[output application/json  --- readUrl('classpath://POSTtest\set-event_payload2.dwl')]" encoding="UTF-8" mediaType="application/json " />
-				<munit:attributes value="#[readUrl('classpath://POSTtest\set-event_attributes2.dwl')]" />
-			</munit:set-event>
-		</munit:behavior>
-		<munit:execution >
-			<flow-ref doc:name="Flow-ref to POST" doc:id="bdef3fcc-d9e3-4f4b-a2a1-a99f9f844712" name="POST"/>
-		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="e7abf50a-ec49-4dd3-b0fb-76a8140062ee" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import POSTtest::assert_expression_payload2
----
-assert_expression_payload2::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
 			</munit-tools:assert>
 		</munit:validation>
 	</munit:test>
