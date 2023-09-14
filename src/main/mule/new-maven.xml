@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cd30507a-8f01-46b2-9f7c-ddb927f4c088" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
-	<flow name="new-mavenFlow" doc:id="81c8332a-234b-4c3f-bc25-6219cced71d6" >
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="df8a2814-5022-4f8a-8609-001442dd85ee" >
+		<db:my-sql-connection host="db4free.net" port="3306" user="aditya2506" password="Aditya2506" database="employee_test" />
+	</db:config>
+	<flow name="GET" doc:id="81c8332a-234b-4c3f-bc25-6219cced71d6" >
 		<http:listener doc:name="Listener" doc:id="7cfa7ae4-5592-4095-8a65-ef3b001578c1" config-ref="HTTP_Listener_config" path="/hello"/>
+		<db:select doc:id="b3569c8f-3e0a-46d8-b309-2958c934db48" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM `EMP-WS_1`]]></db:sql>
+		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="0426847a-a084-41a7-ae5a-ce29d1fa6ad4" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -21,5 +28,22 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="0539a424-d7d1-480f-8dcb-f3950c829cdb" message="hello"/>
+	</flow>
+	<flow name="POST" doc:id="fe38126d-2b73-48d2-8f65-d22082ff18df" >
+		<http:listener doc:name="Listener" doc:id="45b3fa51-9b9c-47b2-8afd-d58bd9810205" config-ref="HTTP_Listener_config" path="/post" allowedMethods="POST"/>
+		<db:insert doc:name="Insert" doc:id="a20b6f94-d1ca-4af4-bf66-4d5e10153c04" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO `EMP-WS_1` (`EmployeeName`, `EmployeeCode`, `Age`) VALUES  ('Astha jain','A15','26')]]></db:sql>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="7a9525cb-9eb6-424f-9729-7297dc9725c5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Message: "Employee successfully got added "
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="eadf0df4-b6cd-4159-93cb-15839d278494" message="bye"/>
 	</flow>
 </mule>
